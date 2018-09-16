@@ -1,26 +1,29 @@
 {
-    "name": "whmcs/sample-merchant-gateway",
-    "description": "Sample Merchant Gateway Module for the WHMCS Billing Automation Platform",
+    "name": "khalti/whmcsplugin",
+    "description": "Khalti Payment Module for WHMCS Integration",
     "keywords": [
         "whmcs",
         "web host automation platform",
         "merchant gateway module",
         "gateway module",
-        "3d secure"
+        "3d secure",
+				"khalti",
+				"payment gateway",
+				"nepal"
     ],
-    "homepage": "http://www.whmcs.com/",
+    "homepage": "https://khalti.com/",
     "license": "MIT",
     "authors": [
         {
-            "name": "WHMCS Development Team",
-            "email": "development@whmcs.com",
-            "homepage": "http://www.whmcs.com/",
+            "name": "Dhruba Adhikari (Khalti.com)",
+            "email": "d@khalti.com",
+            "homepage": "https://khalti.com/",
             "role": "Developer"
         }
     ],
     "support": {
-        "email": "support@whmcs.com",
-        "forum": "http://forums.whmcs.com/",
-        "wiki": "http://docs.whmcs.com/"
+        "email": "support@khalti.com",
+        "forum": "https://khalti.com/",
+        "wiki": "http://docs.khalti.com/"
     }
 }
