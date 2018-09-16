@@ -10,8 +10,8 @@
  *
  * Within the module itself, all functions must be prefixed with the module
  * filename, followed by an underscore, and then the function name. For this
- * example file, the filename is "merchantgateway" and therefore all functions
- * begin "merchantgateway_".
+ * example file, the filename is "paywithkhalti" and therefore all functions
+ * begin "paywithkhalti_".
  *
  * For more information, please refer to the online documentation.
  *
@@ -35,7 +35,7 @@ if (!defined("WHMCS")) {
  *
  * @return array
  */
-function merchantgateway_MetaData()
+function paywithkhalti_MetaData()
 {
     return array(
         'DisplayName' => 'Sample Merchant Gateway Module',
@@ -67,7 +67,7 @@ function merchantgateway_MetaData()
  *
  * @return array
  */
-function merchantgateway_config()
+function paywithkhalti_config()
 {
     return array(
         // the friendly display name for a payment gateway should be
@@ -141,7 +141,7 @@ function merchantgateway_config()
  *
  * @return string 3D Secure Form
  */
-function merchantgateway_3dsecure($params)
+function paywithkhalti_3dsecure($params)
 {
     // Gateway Configuration Parameters
     $accountId = $params['accountID'];
@@ -233,7 +233,7 @@ function merchantgateway_3dsecure($params)
  *
  * @return array Transaction response status
  */
-function merchantgateway_capture($params)
+function paywithkhalti_capture($params)
 {
     // Gateway Configuration Parameters
     $accountId = $params['accountID'];
@@ -304,7 +304,7 @@ function merchantgateway_capture($params)
  *
  * @return array Transaction response status
  */
-function merchantgateway_refund($params)
+function paywithkhalti_refund($params)
 {
     // Gateway Configuration Parameters
     $accountId = $params['accountID'];
