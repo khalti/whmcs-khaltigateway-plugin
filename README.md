@@ -1,3 +1,7 @@
+#WIP
+## This plugin is not live yet. 
+
+
 # WHMCS Sample Merchant Gateway Module #
 
 ## Summary ##
