@@ -19,4 +19,9 @@ Official Plugin for WHMCS
    - directory khaltigateway/ under modules/gateways directory of your root installation
    - file khaltigateway.php under modules/gateways/callback directory of your root installation. (This file is kept just to maintain the convention that WHMCS suggests)
 3. Login to admin area of your WHMCS installation and enable the gateway from ``Setup -> Payments -> Payment Gateways``
-4. 
+(Refer to the image below)
+![Enabling Gateway](modules/gateways/khaltigateway/assets/enable.png)
+4. Once the gateway is enabled, the gateway parameters need to be configured.
+(Refer to the image below)
+![Configuring Khalti Payment Gateway](modules/gateways/khaltigateway/assets/configure.png)
+
