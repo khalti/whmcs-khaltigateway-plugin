@@ -23,11 +23,14 @@ modules /
    - directory khaltigateway/ under modules/gateways directory of your root installation
    - file khaltigateway.php under modules/gateways/callback directory of your root installation. (This file is kept just to maintain the convention that WHMCS suggests)
    
-## Activate / Configure
-1. Login to admin area of your WHMCS installation and enable the gateway from ``Setup -> Payments -> Payment Gateways``
+## Activate
+Login to admin area of your WHMCS installation and enable the gateway from 
+``Setup -> Payments -> Payment Gateways``
 (Refer to the image below)
 ![Enabling Gateway](modules/gateways/khaltigateway/assets/enable.png)
-2. Once the gateway is enabled, the gateway parameters need to be configured.
+
+## Configure
+Once the gateway is enabled, the gateway parameters need to be configured.
 (Refer to the image below)
 ![Configuring Khalti Payment Gateway](modules/gateways/khaltigateway/assets/configure.png)
 
