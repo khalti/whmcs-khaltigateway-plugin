@@ -1,5 +1,5 @@
-# whmcs-khaltigateway-plugin
-Official Plugin for WHMCS
+# Khalti Payment Gateway
+## Official plugin for WHMCS
 
 # Installation
 1. Download the ZIP (or tar.gz) file from the releases [See the releases](https://github.com/khalti/whmcs-khaltigateway-plugin/releases)
