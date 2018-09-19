@@ -1,0 +1,29 @@
+{
+    "name": "khalti/whmcsplugin",
+    "description": "Khalti Payment Module for WHMCS Integration",
+    "keywords": [
+        "whmcs",
+        "web host automation platform",
+        "merchant gateway module",
+        "gateway module",
+        "3d secure",
+				"khalti",
+				"payment gateway",
+				"nepal"
+    ],
+    "homepage": "https://khalti.com/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "acpmasquerade (Khalti.com)",
+            "email": "d@khalti.com",
+            "homepage": "https://khalti.com/",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "support@khalti.com",
+        "forum": "https://khalti.com/",
+        "wiki": "http://docs.khalti.com/"
+    }
+}
