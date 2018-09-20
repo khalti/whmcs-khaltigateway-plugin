@@ -33,4 +33,5 @@ Login to admin area of your WHMCS installation and enable the gateway from
 Once the gateway is enabled, the gateway parameters need to be configured.
 (Refer to the image below)
 ![Configuring Khalti Payment Gateway](modules/gateways/khaltigateway/assets/configure.png)
+PS: Please make sure that the currency "NPR" is selected for the option "Convert to For Processing"
 
