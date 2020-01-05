@@ -158,7 +158,8 @@ function khaltigateway_invoicepage_code($params){
     $moduleUrl = "modules/gateways/khaltigateway/";
 
     $step2Url = $systemUrl.$moduleUrl."step2.php";
-    $successUrl = $systemUrl."viewinvoice.php?id={$invoiceId}&paymentsuccess=true";
+    $invoiceUrl = $systemUrl."viewinvoice.php?id={$invoiceId}";
+    $successUrl = "{$invoiceUrl}&paymentsuccess=true";
 
     $amountInPaisa = $amount * 100;
 
@@ -200,7 +201,8 @@ function khaltigateway_invoicepage_code($params){
             <div class='row' id='khaltigateway-button-content'>
                 <div class='col-sm-5'>
                     <div class='thumbnail' style='border:0px;box-shadow:none; margin-top:2em;'>
-                        <img src='https://d7vw40z4bofef.cloudfront.net/static/khalti_logo_alt.png' />
+                        <img src='https://khalti-mediakit.s3.ap-south-1.amazonaws.com/brand/khalti-logo-color.200.png' />
+                        <!--<img src='https://d7vw40z4bofef.cloudfront.net/static/khalti_logo_alt.png' /> -->
                     </div>
                 </div>
                 <div class='col-sm-7 text-left' style='border-left:1px solid #f9f9f9'>
@@ -219,7 +221,7 @@ function khaltigateway_invoicepage_code($params){
             "publicKey": "{$publicKey}",
             "productIdentity": "Invoice#{$invoiceId} - [{$currencyCode}{$amount}]",
             "productName": "{$description}",
-            "productUrl": "viewinvoice.php?id={$invoiceId}",
+            "productUrl": "{$invoiceUrl}",
             "eventHandler": {
                 onSuccess (payload) {
                     console.log(payload);
