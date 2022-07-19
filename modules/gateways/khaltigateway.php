@@ -161,30 +161,43 @@ function khaltigateway_noinvoicepage_code()
 EOT;
 }
 
-function khaltigateway_invoicepage_code($params)
+function khaltigateway_invoicepage_code($gatewayParams)
 {
-
-    $systemUrl = $params['systemurl'];
-
-    $invoiceId = $params['invoiceid'];
-    $description = htmlspecialchars(strip_tags($params["description"]));
-    $amount = $params['amount'];
+    $systemUrl = $gatewayParams['systemurl'];
+    $invoiceId = $gatewayParams['invoiceid'];
+    $description = htmlspecialchars(strip_tags($gatewayParams["description"]));
+    $amount = $gatewayParams['amount'];
     $amountInPaisa = $amount * 100;
-    $currencyCode = $params['currency'];
-
-    $publicKey = khaltigateway_get_payment_key($params);
+    $currencyCode = $gatewayParams['currency'];
 
     $moduleUrl = "modules/gateways/khaltigateway/";
 
-    $step2Url = $systemUrl . $moduleUrl . "step2.php";
+    $step2Url = $systemUrl . $moduleUrl . "kcheckout_step2.php";
     $invoiceUrl = $systemUrl . "viewinvoice.php?id={$invoiceId}";
     $successUrl = "{$invoiceUrl}&paymentsuccess=true";
+
+    // print_r($successUrl);
 
     $amountInPaisa = $amount * 100;
 
     $processingCode = khaltigateway_processing_code();
 
-    $pidx_args = array(
+
+    // print_r($gatewayParams["cart"]->items[1]->name);
+    $cart = array();
+    foreach ($gatewayParams["cart"]->items as $item) {
+        $amount = intval($item->getAmount()->getValue() * 100);
+        $qty = $item->getQuantity();
+        $cart[] = array(
+            "name" => $item->getName(),
+            "identity"=> $item->getUuid(),
+            "total_price" => $amount,
+            "quantity" => $qty,
+            "unit_price" => $amount / $qty
+        );
+    }
+
+    $checkout_args = array(
         "return_url" => "{$step2Url}",
         "website_url" => "{$systemUrl}",
         "amount" => $amountInPaisa,
@@ -201,18 +214,10 @@ function khaltigateway_invoicepage_code($params)
                 "amount" => $amountInPaisa
             ),
         ),
-        "product_details" => array(
-            array(
-            "identity" => "1234567890",
-            "name" => "{$description}",
-            "total_price" => 1300,
-            "quantity" => 1,
-            "unit_price" => 1300
-            )
-        )
+        "product_details" => $cart
     );
 
-    $payment_initiate = khaltigateway_transaction_initiate_for_checkout($pidx_args, $params);
+    $payment_initiate = khaltigateway_epay_initiate($gatewayParams, $checkout_args);
     $pidx = $payment_initiate["pidx"] || false;
     if (!$pidx){
         $msg = $payment_initiate["status_code"] . "<h3>Error: " . $payment_initiate['message'] . "</h3>";
@@ -243,7 +248,7 @@ function khaltigateway_invoicepage_code($params)
                     <br />
                     <br />
                     <a id='khalti-payment-button' href='{$pidx_url}' class='btn btn-primary btn-large' style='{$buttonCSS}'>
-                        {$params['langpaynow']}
+                        {$gatewayParams['langpaynow']}
                     </a>
                 </div>
             </div>
@@ -253,14 +258,14 @@ EOT;
 
 }
 
-function khaltigateway_link($params)
+function khaltigateway_link($gatewayParams)
 {
     $currentPage = khaltigateway_current_page();
     if ($currentPage !== "VIEWINVOICE") {
         // Wait for the page to be redirected to the invoice page.
         return khaltigateway_noinvoicepage_code();
     }
-    return  khaltigateway_invoicepage_code($params);
+    return  khaltigateway_invoicepage_code($gatewayParams);
 }
 
 /**
@@ -269,46 +274,46 @@ function khaltigateway_link($params)
  *
  * Called when a refund is requested for a previously successful transaction.
  *
- * @param array $params Payment Gateway Module Parameters
+ * @param array $gatewayParams Payment Gateway Module Parameters
  *
  * @return array Transaction response status
  */
-function khaltigateway_refund($params)
+function khaltigateway_refund($gatewayParams)
 {
     return false;
 
     // Gateway Configuration Parameters
-    $accountId = $params['accountID'];
-    $secretKey = $params['secretKey'];
-    $testMode = $params['testMode'];
-    $dropdownField = $params['dropdownField'];
-    $radioField = $params['radioField'];
-    $textareaField = $params['textareaField'];
+    $accountId = $gatewayParams['accountID'];
+    $secretKey = $gatewayParams['secretKey'];
+    $testMode = $gatewayParams['testMode'];
+    $dropdownField = $gatewayParams['dropdownField'];
+    $radioField = $gatewayParams['radioField'];
+    $textareaField = $gatewayParams['textareaField'];
 
     // Transaction Parameters
-    $transactionIdToRefund = $params['transid'];
-    $refundAmount = $params['amount'];
-    $currencyCode = $params['currency'];
+    $transactionIdToRefund = $gatewayParams['transid'];
+    $refundAmount = $gatewayParams['amount'];
+    $currencyCode = $gatewayParams['currency'];
 
     // Client Parameters
-    $firstname = $params['clientdetails']['firstname'];
-    $lastname = $params['clientdetails']['lastname'];
-    $email = $params['clientdetails']['email'];
-    $address1 = $params['clientdetails']['address1'];
-    $address2 = $params['clientdetails']['address2'];
-    $city = $params['clientdetails']['city'];
-    $state = $params['clientdetails']['state'];
-    $postcode = $params['clientdetails']['postcode'];
-    $country = $params['clientdetails']['country'];
-    $phone = $params['clientdetails']['phonenumber'];
+    $firstname = $gatewayParams['clientdetails']['firstname'];
+    $lastname = $gatewayParams['clientdetails']['lastname'];
+    $email = $gatewayParams['clientdetails']['email'];
+    $address1 = $gatewayParams['clientdetails']['address1'];
+    $address2 = $gatewayParams['clientdetails']['address2'];
+    $city = $gatewayParams['clientdetails']['city'];
+    $state = $gatewayParams['clientdetails']['state'];
+    $postcode = $gatewayParams['clientdetails']['postcode'];
+    $country = $gatewayParams['clientdetails']['country'];
+    $phone = $gatewayParams['clientdetails']['phonenumber'];
 
     // System Parameters
-    $companyName = $params['companyname'];
-    $systemUrl = $params['systemurl'];
-    $langPayNow = $params['langpaynow'];
-    $moduleDisplayName = $params['name'];
-    $moduleName = $params['paymentmethod'];
-    $whmcsVersion = $params['whmcsVersion'];
+    $companyName = $gatewayParams['companyname'];
+    $systemUrl = $gatewayParams['systemurl'];
+    $langPayNow = $gatewayParams['langpaynow'];
+    $moduleDisplayName = $gatewayParams['name'];
+    $moduleName = $gatewayParams['paymentmethod'];
+    $whmcsVersion = $gatewayParams['whmcsVersion'];
 
     // perform API call to initiate refund and interpret result
 

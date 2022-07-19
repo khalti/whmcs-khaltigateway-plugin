@@ -1,21 +1,19 @@
 <?php
 /** Khalti.com Payment Gateway WHMCS Module */
-
 header("Content-Type: application/json");
 // Require libraries needed for gateway module functions.
 $WHMCS_ROOT = dirname(dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))));
 require_once dirname(__FILE__)."/init.php";
 require_once dirname(__FILE__)."/common.php";
 
-$payload = file_get_contents("php://input");
-$payload = json_decode($payload);
+$callback_args = $_GET;
 
-print_r($payload);
-die();
+$pidx = $callback_args['pidx'];
+$khalti_transaction_id = $callback_args['transaction_id'] ? $callback_args['transaction_id'] : $callback_args['txnId'];
 
-$khaltiToken = $payload->token;
-$khaltiAmount = $payload->amount;
-$invoiceId = $payload->invoiceId;
+$amount_paisa = intval($callback_args['amount']);
+$amount_rs = $amount_paisa / 100;
+$invoice_id = $callback_args['purchase_order_id'];
 
 $gatewayModule = $gatewayParams['name'];
 
@@ -24,42 +22,42 @@ function error_resp($msg){
     die($msg);
 }
 
-if(!$khaltiToken || !$khaltiAmount){
+if(!$khalti_transaction_id || !$amount_paisa){
     error_resp("Insufficient Data to proceed.");
 }
 
-/**
- * Validate Callback Invoice ID.
- *
- * Checks invoice ID is a valid invoice number. Note it will count an
- * invoice in any status as valid.
- *
- * Performs a die upon encountering an invalid Invoice ID.
- *
- * Returns a normalised invoice ID.
- *
- * @param int $invoiceId Invoice ID
- * @param string $gatewayName Gateway Name
- */
-$invoiceId = checkCbInvoiceID($invoiceId, $gatewayModule);
+$response = khaltigateway_epay_lookup($gatewayParams, $pidx);
 
-$response = khaltigateway_confirm_transaction($gatewayParams, $khaltiToken, $khaltiAmount);
+print_r($response);
 
 if(!$response){
     error_resp("Confirmation Failed.");
 }
 
-$response = json_decode($response);
-
-if(!$response->idx){
-    error_resp("Payment rejected by Khalti.");
-}
-
-if($response->refunded == true){
+if($response["status"] == "Refuded"){
     error_resp("ERROR !! Payment already refunded.");
 }
 
-$transactionId = $response->idx;
+if($response["status"] == "Expired"){
+    error_resp("ERROR !! Payment Request alreadyd expired.");
+}
+
+if($response["status"] == "Pending"){
+    error_resp("Payment is still pending");
+}
+
+if($response["status"] !== "Completed"){
+    error_resp("ERROR !! Payment status is NOT COMPLETE.");
+}
+/** Prepare data for whmcs processing */
+$wh_response = $response;
+$wh_invoiceId = $invoice_id;
+$wh_paymentAmount = $amount_rs;
+$wh_payload = $callback_args;
+$wh_transactionId = $khalti_transaction_id;
+$wh_paymentSuccess = true;
+$wh_paymentFee = 0.0;
+
 
 /**
  * Check Callback Transaction ID.
@@ -71,7 +69,7 @@ $transactionId = $response->idx;
  *
  * @param string $transactionId Unique Transaction ID
  */
-checkCbTransID($transactionId);
+checkCbTransID($khalti_transaction_id);
 
 /**
  * Log Transaction.
@@ -86,13 +84,12 @@ checkCbTransID($transactionId);
  * @param string $transactionStatus  Status
  */
 $debugData = json_encode(array(
-    'payload' => $payload,
-    'khalti_response' => $response,
-    'invoiceId' => $invoiceId
+    'payload' => $wh_payload,
+    'khalti_response' => $wh_response,
+    'invoiceId' => $wh_invoiceId
 ));
 
 logTransaction($gatewayModule, $debugData, "Success");
-$paymentSuccess = true;
 
 /**
  * Add Invoice Payment.
@@ -105,13 +102,12 @@ $paymentSuccess = true;
  * @param float $paymentFee      Payment fee (optional)
  * @param string $gatewayModule  Gateway module name
  */
-$paymentAmount = $khaltiAmount / 100.0;
 $paymentFee = 0.0;
 addInvoicePayment(
-    $invoiceId,
-    $transactionId,
-    $paymentAmount,
-    $paymentFee,
+    $wh_invoiceId,
+    $wh_transactionId,
+    $wh_paymentAmount,
+    $wh_paymentFee,
     $gatewayModule
 );
 
@@ -124,4 +120,4 @@ addInvoicePayment(
  * @param int $invoiceId        Invoice ID
  * @param bool $paymentSuccess  Payment status
  */
-callback3DSecureRedirect($invoiceId, $paymentSuccess);
+callback3DSecureRedirect($wh_invoiceId, $wh_paymentSuccess);
