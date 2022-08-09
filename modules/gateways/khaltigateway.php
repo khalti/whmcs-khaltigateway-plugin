@@ -41,7 +41,7 @@ function khaltigateway_MetaData()
 {
     return array(
         'DisplayName' => 'Khalti Payment Gateway',
-        'APIVersion' => '1.1', // Use API Version 1.1
+        'APIVersion' => '2.1', // 
         'DisableLocalCreditCardInput' => true,
         'TokenisedStorage' => false,
     );
@@ -148,7 +148,7 @@ function khaltigateway_invoicepage_code($params){
     $systemUrl = $params['systemurl'];
 
     $invoiceId = $params['invoiceid'];
-    $description = htmlspecialchars(strip_tags($params["description"]));
+    $description = "HOSTING" ;
     $amount = $params['amount'];
     $amountInPaisa = $amount * 100;
     $currencyCode = $params['currency'];
@@ -168,7 +168,7 @@ function khaltigateway_invoicepage_code($params){
     $buttonCSS = "";
         
     return <<<EOT
-    <script src="https://khalti.com/static/khalti-checkout.js"></script>
+    <script src="https://khalti.s3.ap-south-1.amazonaws.com/KPG/dist/2020.12.17.0.0.0/khalti-checkout.iffe.js"></script>
     <script type='text/javascript'>
     function ajaxpost(payload){
         xhr = new XMLHttpRequest();
@@ -218,11 +218,11 @@ function khaltigateway_invoicepage_code($params){
     </div>
     <script>
         var config = {
-            "publicKey": "{$publicKey}",
-            "productIdentity": "Invoice#{$invoiceId} - [{$currencyCode}{$amount}]",
-            "productName": "{$description}",
-            "productUrl": "{$invoiceUrl}",
-            "eventHandler": {
+             "publicKey": "{$publicKey}",
+        "productIdentity":  "{$invoiceId}",
+        "productName": "{$description}",
+	    "productUrl":  "{$invoiceUrl}",
+        "eventHandler": {
                 onSuccess (payload) {
                     console.log(payload);
                     var confirmationPayload = payload;
@@ -260,63 +260,3 @@ function khaltigateway_link($params) {
     return  khaltigateway_invoicepage_code($params);
 }
 
-/**
- * Refund transaction.
- * Yet to be implemented.
- *
- * Called when a refund is requested for a previously successful transaction.
- *
- * @param array $params Payment Gateway Module Parameters
- *
- * @return array Transaction response status
- */
-function khaltigateway_refund($params)
-{
-    return false;
-
-    // Gateway Configuration Parameters
-    $accountId = $params['accountID'];
-    $secretKey = $params['secretKey'];
-    $testMode = $params['testMode'];
-    $dropdownField = $params['dropdownField'];
-    $radioField = $params['radioField'];
-    $textareaField = $params['textareaField'];
-
-    // Transaction Parameters
-    $transactionIdToRefund = $params['transid'];
-    $refundAmount = $params['amount'];
-    $currencyCode = $params['currency'];
-
-    // Client Parameters
-    $firstname = $params['clientdetails']['firstname'];
-    $lastname = $params['clientdetails']['lastname'];
-    $email = $params['clientdetails']['email'];
-    $address1 = $params['clientdetails']['address1'];
-    $address2 = $params['clientdetails']['address2'];
-    $city = $params['clientdetails']['city'];
-    $state = $params['clientdetails']['state'];
-    $postcode = $params['clientdetails']['postcode'];
-    $country = $params['clientdetails']['country'];
-    $phone = $params['clientdetails']['phonenumber'];
-
-    // System Parameters
-    $companyName = $params['companyname'];
-    $systemUrl = $params['systemurl'];
-    $langPayNow = $params['langpaynow'];
-    $moduleDisplayName = $params['name'];
-    $moduleName = $params['paymentmethod'];
-    $whmcsVersion = $params['whmcsVersion'];
-
-    // perform API call to initiate refund and interpret result
-
-    return array(
-        // 'success' if successful, otherwise 'declined', 'error' for failure
-        'status' => 'success',
-        // Data to be recorded in the gateway log - can be a string or array
-        'rawdata' => $responseData,
-        // Unique Transaction ID for the refund transaction
-        'transid' => $refundTransactionId,
-        // Optional fee amount for the fee value refunded
-        'fees' => $feeAmount,
-    );
-}
