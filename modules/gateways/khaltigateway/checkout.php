@@ -21,6 +21,7 @@ function khaltigateway_invoicepage_code($gateway_params)
             return file_get_contents(__DIR__ . '/templates/invalid_currency.html');
         }
         $npr_conversion = $npr_amount / $amount;
+        khaltigateway_testmode_debug($gateway_params, "Converted amount: " . $npr_amount . " from " . $amount . " " . $currency_code . " to NPR");
     }else{
         $npr_amount = $amount;
     }
@@ -35,14 +36,24 @@ function khaltigateway_invoicepage_code($gateway_params)
 
     $cart = array();
     foreach ($gateway_params["cart"]->items as $item) {
-        $amount = intval($item->getAmount()->getValue() * $npr_conversion * 100);
+        $amount = $item->getAmount()->getValue();
+        $currency_code = $item->getAmount()->getCurrency()['code'];
+        if(!khaltigateway_validate_currency($currency_code)){
+            $amount = khaltigateway_convert_currency($currency_code, $amount);
+            if($amount === FALSE){
+                return file_get_contents(__DIR__ . '/templates/invalid_currency.html');
+            }
+        }
+
+        $item_amount_in_paisa = intval($amount * 100);
+
         $qty = $item->getQuantity();
         $cart[] = array(
             "name" => $item->getName(),
             "identity"=> $item->getUuid(),
-            "total_price" => $amount,
+            "total_price" => $item_amount_in_paisa,
             "quantity" => $qty,
-            "unit_price" => $amount / $qty
+            "unit_price" => $item_amount_in_paisa / $qty
         );
     }
 

@@ -4,9 +4,15 @@ header("Content-Type: application/json");
 // Require libraries needed for gateway module functions.
 $WHMCS_ROOT = dirname(dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))));
 require_once dirname(__FILE__)."/init.php";
-require_once dirname(__FILE__)."/common.php";
+die();
+// require_once dirname(__FILE__)."/common.php";
+
+error_reporting(E_ALL);
+ini_set("display_errors", 1);   
 
 $callback_args = $_GET;
+
+ndie($callback_args);
 
 $pidx = $callback_args['pidx'];
 $khalti_transaction_id = $callback_args['transaction_id'] ? $callback_args['transaction_id'] : $callback_args['txnId'];
