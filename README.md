@@ -40,7 +40,8 @@ Login to admin area of your WHMCS installation and enable the gateway from
 ![Enabling Gateway](modules/gateways/khaltigateway/assets/enable.png)
 
 ## Configure
-Once the gateway is enabled, configure Khalti Payment Gateway with the merchant secrets from [admin.khalti.com]
+Once the gateway is enabled, configure Khalti Payment Gateway with the merchant secrets from [admin.khalti.com](https://admin.khalti.com/)
 (Refer to the image below)
 ![Configuring Khalti Payment Gateway](modules/gateways/khaltigateway/assets/configure_epay.png)
+
 PS: Please make sure that the currency "NPR" is selected for the option "Convert to For Processing"
