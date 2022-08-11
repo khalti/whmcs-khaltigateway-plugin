@@ -63,17 +63,21 @@ $wh_paymentSuccess = true;
 $wh_paymentFee = 0.0;
 $wh_gatewayModule = $gateway_module;
 
+// convert from NPR to base currency
+$wh_amount_in_base_currency = khaltigateway_convert_from_npr_to_basecurrency($amount_rs);
+
+// Fetch the actual invoice details
+$invoice = localAPI("GetInvoice", array("invoiceid" => $invoice_id));
+
 $khaltigateway_whmcs_submit_data = array(
     'wh_payload' => $wh_payload,
     'wh_response' => $wh_response,
     'wh_invoiceId' => $wh_invoiceId,
     'wh_gatewayModule' => $wh_gatewayModule,
     'wh_transactionId' => $wh_transactionId,
-    'wh_paymentAmount' => $wh_paymentAmount,
+    'wh_paymentAmount' => $wh_amount_in_base_currency,
     'wh_paymentFee' => $wh_paymentFee,
     'wh_paymentSuccess' => $wh_paymentSuccess
 );
-
-// mdie($khaltigateway_whmcs_submit_data);
 
 khaltigateway_acknowledge_whmcs_for_payment($khaltigateway_whmcs_submit_data);

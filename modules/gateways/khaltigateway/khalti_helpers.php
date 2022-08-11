@@ -7,9 +7,7 @@
 
 function khaltigateway_validate_currency($currency_code)
 {
-    return in_array(strtoupper($currency_code), array(
-        "NPR", "NRS"
-    ));
+    return $currency_code == "NPR";
 }
 
 function khaltigateway_convert_currency($currency_code, $amount)
@@ -20,6 +18,21 @@ function khaltigateway_convert_currency($currency_code, $amount)
         return FALSE;
     }
     return convertCurrency($amount, $payment_currency_id, $npr_currency_id); //Here the result is the same amount sent
+}
+
+function khaltigateway_convert_from_npr_to_basecurrency($npr_amount)
+{
+    $base_currency_id = WHMCS\Database\Capsule::table("tblcurrencies")->where("default", "1")->value("id");
+    $npr_currency_id = WHMCS\Database\Capsule::table("tblcurrencies")->where("code", "NPR")->value("id");
+    if ($base_currency_id) {
+        if ($base_currency_id == $npr_currency_id) {
+            return $npr_amount;
+        } else {
+            return convertCurrency($npr_amount, $npr_currency_id, $base_currency_id);
+        }
+    } else {
+        return FALSE;
+    }
 }
 
 function khaltigateway_whmcs_current_page()

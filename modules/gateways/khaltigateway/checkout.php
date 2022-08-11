@@ -1,8 +1,8 @@
-<?php 
+<?php
 
 function khaltigateway_noinvoicepage_code()
 {
-    return file_get_contents(__DIR__."/templates/noninvoice_page.html");
+    return file_get_contents(__DIR__ . "/templates/noninvoice_page.html");
 }
 
 function khaltigateway_invoicepage_code($gateway_params)
@@ -12,17 +12,17 @@ function khaltigateway_invoicepage_code($gateway_params)
     $description = htmlspecialchars(strip_tags($gateway_params["description"]));
     $amount = $gateway_params['amount'];
     $currency_code = $gateway_params['currency'];
-    
+
     $npr_conversion = 1;
 
-    if(!khaltigateway_validate_currency($currency_code)){
+    if (!khaltigateway_validate_currency($currency_code)) {
         $npr_amount = khaltigateway_convert_currency($currency_code, $amount);
-        if($npr_amount === FALSE){
+        if ($npr_amount === FALSE) {
             return file_get_contents(__DIR__ . '/templates/invalid_currency.html');
         }
         $npr_conversion = $npr_amount / $amount;
         khaltigateway_testmode_debug($gateway_params, "Converted amount: " . $npr_amount . " from " . $amount . " " . $currency_code . " to NPR");
-    }else{
+    } else {
         $npr_amount = $amount;
     }
 
@@ -38,9 +38,9 @@ function khaltigateway_invoicepage_code($gateway_params)
     foreach ($gateway_params["cart"]->items as $item) {
         $amount = $item->getAmount()->getValue();
         $currency_code = $item->getAmount()->getCurrency()['code'];
-        if(!khaltigateway_validate_currency($currency_code)){
+        if (!khaltigateway_validate_currency($currency_code)) {
             $amount = khaltigateway_convert_currency($currency_code, $amount);
-            if($amount === FALSE){
+            if ($amount === FALSE) {
                 return file_get_contents(__DIR__ . '/templates/invalid_currency.html');
             }
         }
@@ -50,7 +50,7 @@ function khaltigateway_invoicepage_code($gateway_params)
         $qty = $item->getQuantity();
         $cart[] = array(
             "name" => $item->getName(),
-            "identity"=> $item->getUuid(),
+            "identity" => $item->getUuid(),
             "total_price" => $item_amount_in_paisa,
             "quantity" => $qty,
             "unit_price" => $item_amount_in_paisa / $qty
@@ -80,36 +80,23 @@ function khaltigateway_invoicepage_code($gateway_params)
     $payment_initiate = khaltigateway_epay_initiate($gateway_params, $checkout_args);
     $pidx = $payment_initiate["pidx"];
 
-    if (!$pidx){
-        return file_get_contents(__DIR__."/templates/initiate_failed.html");
+    if (!$pidx) {
+        return file_get_contents(__DIR__ . "/templates/initiate_failed.html");
     }
 
+    /** 
+     * Variables required for the template
+     * pidx_url
+     * button_css
+     * gateway_params
+     * npr_amount
+     */
     $pidx_url = $payment_initiate["payment_url"];
-
-    $buttonCSS = "";
-
-    return <<<EOT
-        <div class='row' id='khaltigateway-button-wrapper'>
-        <div class='col-sm-12' style='padding:2em; border:1px solid #cccccc; background:#eeeeee'>
-            <div class='row' id='khaltigateway-button-content'>
-                <div class='col-sm-5'>
-                    <div class='thumbnail' style='border:0px;box-shadow:none; margin-top:2em;'>
-                        <img src='https://khalti-mediakit.s3.ap-south-1.amazonaws.com/brand/khalti-logo-color.200.png' />
-                    </div>
-                </div>
-                <div class='col-sm-7 text-left' style='border-left:1px solid #f9f9f9'>
-                    <small>You can pay with Khalti account or other e-Banking Options</small>
-                    <br />
-                    <br />
-                    <a id='khalti-payment-button' href='{$pidx_url}' class='btn btn-primary btn-large' style='{$buttonCSS}'>
-                        {$gateway_params['langpaynow']}
-                    </a>
-                    <br />
-                    <small>NPR {$npr_amount}</small>
-                </div>
-            </div>
-        </div>
-    </div>
-EOT;
-
+    return file_include_contents(__DIR__ . "/templates/invoice_payment_button.php", array(
+        'khalti_logo_url' => 'https://khalti-mediakit.s3.ap-south-1.amazonaws.com/brand/khalti-logo-color.200.png',
+        "pidx_url" => $pidx_url,
+        "button_css" => "",
+        "gateway_params" => $gateway_params,
+        "npr_amount" => $npr_amount
+    ));
 }
