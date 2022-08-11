@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Khalti.com Payment Gateway WHMCS Module
+ * 
+ * @see https://docs.khalti.com/
+ * 
+ * @copyright Copyright (c) Khalti Private Limited
+ * @author : @acpmasquerade for Khalti.com
+ */
+
 function khaltigateway_noinvoicepage_code()
 {
     return file_get_contents(__DIR__ . "/templates/noninvoice_page.html");
@@ -13,14 +22,11 @@ function khaltigateway_invoicepage_code($gateway_params)
     $amount = $gateway_params['amount'];
     $currency_code = $gateway_params['currency'];
 
-    $npr_conversion = 1;
-
     if (!khaltigateway_validate_currency($currency_code)) {
         $npr_amount = khaltigateway_convert_currency($currency_code, $amount);
         if ($npr_amount === FALSE) {
             return file_get_contents(__DIR__ . '/templates/invalid_currency.html');
         }
-        $npr_conversion = $npr_amount / $amount;
         khaltigateway_testmode_debug($gateway_params, "Converted amount: " . $npr_amount . " from " . $amount . " " . $currency_code . " to NPR");
     } else {
         $npr_amount = $amount;

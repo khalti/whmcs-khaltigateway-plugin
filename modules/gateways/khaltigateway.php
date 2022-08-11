@@ -1,4 +1,15 @@
 <?php
+
+/**
+ * Khalti.com Payment Gateway WHMCS Module
+ * 
+ * @see https://docs.khalti.com/
+ * 
+ * @copyright Copyright (c) Khalti Private Limited
+ * @author : @acpmasquerade for Khalti.com
+ */
+
+
 if (!defined("WHMCS")) {
     die("This file cannot be accessed directly");
 }

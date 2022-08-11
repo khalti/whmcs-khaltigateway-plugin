@@ -1,5 +1,14 @@
 <?php
-/** Khalti.com Payment Gateway WHMCS Module */
+
+/**
+ * Khalti.com Payment Gateway WHMCS Module
+ * 
+ * @see https://docs.khalti.com/
+ * 
+ * @copyright Copyright (c) Khalti Private Limited
+ * @author : @acpmasquerade for Khalti.com
+ */
+
 die("<pre style='padding:7em 10em;color:purple;font-family:mono'>
 
 ╦╔═╦ ╦╔═╗╦ ╔╦╗╦        ╔╦╗╔═╗╔╦╗       ╔═╗╔═╗╔╦╗   
@@ -35,4 +44,3 @@ Sincerely,
 <small>PS: This page is a part of the <a href='https://github.com/khalti/whmcs-khaltigateway-plugin'>official Khalti Plugin for WHMCS</a> and it does literally nothing.</small>
 
 </pre>");
-

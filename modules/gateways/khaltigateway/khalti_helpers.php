@@ -1,8 +1,12 @@
 <?php
 
-/** 
- * Khalti Payment Gateway for WHMCS 
- * Author : @acpmasquerade for Khalti.com
+/**
+ * Khalti.com Payment Gateway WHMCS Module
+ * 
+ * @see https://docs.khalti.com/
+ * 
+ * @copyright Copyright (c) Khalti Private Limited
+ * @author : @acpmasquerade for Khalti.com
  */
 
 function khaltigateway_validate_currency($currency_code)

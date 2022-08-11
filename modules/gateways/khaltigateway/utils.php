@@ -1,4 +1,14 @@
-<?php 
+<?php
+
+/**
+ * Khalti.com Payment Gateway WHMCS Module
+ * 
+ * @see https://docs.khalti.com/
+ * 
+ * @copyright Copyright (c) Khalti Private Limited
+ * @author : @acpmasquerade for Khalti.com
+ */
+
 
 /**
  * Print_r inside a preformatted tag <pre>

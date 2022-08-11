@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Khalti.com Payment Gateway WHMCS Module
+ * 
+ * @see https://docs.khalti.com/
+ * 
+ * @copyright Copyright (c) Khalti Private Limited
+ * @author : @acpmasquerade for Khalti.com
+ */
+
+
 function khaltigateway_acknowledge_whmcs_for_payment($post_data)
 {
     $khalti_transaction_id = $post_data["khalti_transaction_id"];

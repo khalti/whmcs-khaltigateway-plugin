@@ -1,10 +1,20 @@
 <?php
 
-require_once __DIR__ ."/utils.php";
-require_once __DIR__ ."/khalti_helpers.php";
-require_once __DIR__ ."/checkout.php";
+/**
+ * Khalti.com Payment Gateway WHMCS Module
+ * 
+ * @see https://docs.khalti.com/
+ * 
+ * @copyright Copyright (c) Khalti Private Limited
+ * @author : @acpmasquerade for Khalti.com
+ */
 
-# Build the constants
+
+require_once __DIR__ . "/utils.php";
+require_once __DIR__ . "/khalti_helpers.php";
+require_once __DIR__ . "/checkout.php";
+
+// Build the constants
 if (!defined("KHALTIGATEWAY_WHMCS_MODULE_NAME")) {
     define("KHALTIGATEWAY_WHMCS_MODULE_NAME", "khaltigateway");
 
@@ -21,18 +31,10 @@ if (!defined("KHALTIGATEWAY_WHMCS_MODULE_NAME")) {
     define('KHALTIGATEWAY_EPAY_LIVE_ENDPOINT', "https://a.khalti.com/api/v2/");
 }
 
-// // Require libraries needed for gateway module functions.
-// $WHMCS_ROOT = dirname($_SERVER['SCRIPT_FILENAME']);
-// require_once "{$WHMCS_ROOT}/init.php";
-
-// $whmcs->load_function('gateway');
-// $whmcs->load_function('invoice');
-
 // Fetch gateway configuration parameters if GatewayModule is activated
-try{
+try {
     $khaltigateway_gateway_params = getGatewayVariables(KHALTIGATEWAY_WHMCS_MODULE_NAME);
-}
-catch (Exception $e) {
-    # Module is probably not activated yet. 
-    # simply ignore the error and return empty array.
+} catch (Exception $e) {
+    // Module is probably not activated yet. 
+    // simply ignore the error and return empty array.
 }

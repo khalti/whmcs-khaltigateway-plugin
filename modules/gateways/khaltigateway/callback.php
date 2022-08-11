@@ -1,16 +1,27 @@
 <?php
-/** Khalti.com Payment Gateway WHMCS Module */
+
+/**
+ * Khalti.com Payment Gateway WHMCS Module
+ * 
+ * @see https://docs.khalti.com/
+ * 
+ * @copyright Copyright (c) Khalti Private Limited
+ * @author : @acpmasquerade for Khalti.com
+ */
+
 header("Content-Type: application/json");
 // Require libraries needed for gateway module functions.
 $WHMCS_ROOT = dirname(dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))));
 
-# load whmcs
-require_once $WHMCS_ROOT."/init.php";
-require_once $WHMCS_ROOT."/includes/gatewayfunctions.php";
+// load whmcs
+require_once $WHMCS_ROOT . "/init.php";
 
-# load the khaltigateway init file
-require_once __DIR__."/init.php";
-require_once __DIR__."/whmcs.php";
+$whmcs->load_function('gateway');
+$whmcs->load_function('invoice');
+
+// load the khaltigateway init file
+require_once __DIR__ . "/init.php";
+require_once __DIR__ . "/whmcs.php";
 
 $callback_args = $_GET;
 
@@ -23,37 +34,38 @@ $invoice_id = $callback_args['purchase_order_id'];
 
 $gateway_module = $khaltigateway_gateway_params['paymentmethod'];
 
-function error_resp($msg){
+function error_resp($msg)
+{
     header("HTTP/1.1 400 Bad Request");
     die($msg);
 }
 
-if(!$khalti_transaction_id || !$amount_paisa){
+if (!$khalti_transaction_id || !$amount_paisa) {
     error_resp("Insufficient Data to proceed.");
 }
 
 $response = khaltigateway_epay_lookup($khaltigateway_gateway_params, $pidx);
 
-if(!$response){
+if (!$response) {
     error_resp("Confirmation Failed.");
 }
 
-if($response["status"] == "Refuded"){
+if ($response["status"] == "Refuded") {
     error_resp("ERROR !! Payment already refunded.");
 }
 
-if($response["status"] == "Expired"){
+if ($response["status"] == "Expired") {
     error_resp("ERROR !! Payment Request alreadyd expired.");
 }
 
-if($response["status"] == "Pending"){
+if ($response["status"] == "Pending") {
     error_resp("Payment is still pending");
 }
 
-if($response["status"] !== "Completed"){
+if ($response["status"] !== "Completed") {
     error_resp("ERROR !! Payment status is NOT COMPLETE.");
 }
-/** Prepare data for whmcs processing */
+// Prepare data for whmcs processing
 $wh_response = $response;
 $wh_invoiceId = $invoice_id;
 $wh_paymentAmount = $amount_rs;
@@ -80,4 +92,5 @@ $khaltigateway_whmcs_submit_data = array(
     'wh_paymentSuccess' => $wh_paymentSuccess
 );
 
+// Submit the data to whmcs
 khaltigateway_acknowledge_whmcs_for_payment($khaltigateway_whmcs_submit_data);
