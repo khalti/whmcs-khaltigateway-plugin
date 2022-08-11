@@ -1,7 +1,7 @@
 <?php 
 
-function ndie($data){
-    echo "<pre>";
+function ndie($data, $style=""){
+    echo "<pre style='{$style}'>";
     print_r($data);
     echo "</pre>";
 }

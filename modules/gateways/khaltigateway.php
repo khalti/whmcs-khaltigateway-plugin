@@ -17,6 +17,7 @@ function khaltigateway_MetaData()
 
 function khaltigateway_config()
 {
+
     return array(
         'FriendlyName' => array(
             'Type' => 'System',
@@ -24,22 +25,22 @@ function khaltigateway_config()
         ),
         'test_api_key' => array(
             'FriendlyName' => 'TEST Payment API Key for Checkout Mode Integration',
-            'Type' => 'password',
+            'Type' => 'text',
             'Size' => '48',
-            'Default' => 'test_secret_01234567890123456789012345678901',
+            'Default' => 'test_key_01234567890123456789012345678901',
             'Description' => 'Please visit https://khalti.com/merchant to get your keys',
         ),
         'live_api_key' => array(
             'FriendlyName' => 'LIVE Payment API Key for Checkout Mode Integration',
             'Type' => 'password',
             'Size' => '48',
-            'Default' => 'test_secret_01234567890123456789012345678901',
+            'Default' => 'live_key_01234567890123456789012345678901',
             'Description' => 'Please visit https://khalti.com/merchant to get your keys',
         ),
         'enable_debugging' => array(
-            'FriendlyName' => 'Test Mode',
+            'FriendlyName' => 'Enable Debugging',
             'Type' => 'yesno',
-            'Description' => 'Tick to enable test mode',
+            'Description' => 'Tick to enable debugging mode',
         ),
         'is_test_mode' => array(
             'FriendlyName' => 'Test Mode',

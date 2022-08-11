@@ -1,5 +1,9 @@
 <?php
 
+require_once __DIR__ ."/utils.php";
+require_once __DIR__ ."/khalti_helpers.php";
+require_once __DIR__ ."/checkout.php";
+
 # Build the constants
 if (!defined("KHALTIGATEWAY_WHMCS_MODULE_NAME")) {
     define("KHALTIGATEWAY_WHMCS_MODULE_NAME", "khaltigateway");
@@ -21,20 +25,14 @@ if (!defined("KHALTIGATEWAY_WHMCS_MODULE_NAME")) {
 // $WHMCS_ROOT = dirname($_SERVER['SCRIPT_FILENAME']);
 // require_once "{$WHMCS_ROOT}/init.php";
 
-// print_r($whmcs);
-// die();
-
 // $whmcs->load_function('gateway');
 // $whmcs->load_function('invoice');
 
-// Fetch gateway configuration parameters.
-$khaltigateway_gateway_params = getGatewayVariables(KHALTIGATEWAY_WHMCS_MODULE_NAME);
-
-// Die if module is not active.
-if (!$khaltigateway_gateway_params['type']) {
-    die("Module Not Activated");
+// Fetch gateway configuration parameters if GatewayModule is activated
+try{
+    $khaltigateway_gateway_params = getGatewayVariables(KHALTIGATEWAY_WHMCS_MODULE_NAME);
 }
-
-require_once __DIR__ ."/utils.php";
-require_once __DIR__ ."/khalti_helpers.php";
-require_once __DIR__ ."/checkout.php";
+catch (Exception $e) {
+    # Module is probably not activated yet. 
+    # simply ignore the error and return empty array.
+}

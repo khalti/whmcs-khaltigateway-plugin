@@ -1,0 +1,4 @@
+*.tar.gz
+ioncube_*
+ioncube_loader_*
+*.code-workspace

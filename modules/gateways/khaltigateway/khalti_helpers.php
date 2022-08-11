@@ -1,10 +1,25 @@
 <?php
 
+/** 
+ * Khalti Payment Gateway for WHMCS 
+ * Author : @acpmasquerade for Khalti.com
+ */
+
 function khaltigateway_validate_currency($currency_code)
 {
     return in_array(strtoupper($currency_code), array(
         "NPR", "NRS"
     ));
+}
+
+function khaltigateway_convert_currency($currency_code, $amount)
+{
+    $payment_currency_id = WHMCS\Database\Capsule::table("tblcurrencies")->where("code", $currency_code)->value("id");
+    $npr_currency_id = WHMCS\Database\Capsule::table("tblcurrencies")->where("code", "NPR")->value("id");
+    if (is_null($payment_currency_id)) {
+        return FALSE;
+    }
+    return convertCurrency($amount, $payment_currency_id, $npr_currency_id); //Here the result is the same amount sent
 }
 
 function khaltigateway_whmcs_current_page()
@@ -23,9 +38,15 @@ function khaltigateway_get_production_mode($gateway_params)
     }
 }
 
-function khaltigateway_testmode_debug($gateway_params, $data){
-    if(khaltigateway_get_production_mode($gateway_params) == KHALTIGATEWAY_TEST_MODE){
+function khaltigateway_testmode_debug($gateway_params, $data)
+{
+    if (khaltigateway_get_production_mode($gateway_params) == KHALTIGATEWAY_TEST_MODE) {
+        echo <<<EOT
+        <div class='alert alert-warning' style='margin:0 10%; border-left:10px solid #5E338D;'>
+        <strong>Debug Information for Khalti Payment Gateway</strong>
+EOT;
         ndie($data);
+        echo "</div>";
     }
 }
 
@@ -68,21 +89,17 @@ function khaltigateway_make_api_call($gateway_params, $api, $payload)
     $response = curl_exec($ch);
     if (curl_error($ch)) {
         return NULL;
-        die('Unable to connect: ' . curl_errno($ch) . ' - ' . curl_error($ch));
     }
     curl_close($ch);
 
-    ndie($response);
     khaltigateway_testmode_debug($gateway_params, $response);
 
-    $json_data = json_decode($response, true);
-    return $json_data;
+    return json_decode($response, true);
 }
 
 function khaltigateway_epay_initiate($gateway_params, $checkout_params)
 {
-    $json_data = khaltigateway_make_api_call($gateway_params, KHALTIGATEWAY_EPAY_INITIATE_API, $checkout_params);
-    return $json_data;
+    return khaltigateway_make_api_call($gateway_params, KHALTIGATEWAY_EPAY_INITIATE_API, $checkout_params);
 }
 
 function khaltigateway_epay_lookup($gateway_params, $pidx)
@@ -90,6 +107,5 @@ function khaltigateway_epay_lookup($gateway_params, $pidx)
     $payload = array(
         "pidx" => $pidx
     );
-    $json_data = khaltigateway_make_api_call($gateway_params, KHALTIGATEWAY_EPAY_LOOKUP_API, $payload);
-    return $json_data;
+    return khaltigateway_make_api_call($gateway_params, KHALTIGATEWAY_EPAY_LOOKUP_API, $payload);
 }
