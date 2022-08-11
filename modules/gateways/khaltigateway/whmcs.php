@@ -1,6 +1,6 @@
 <?php
 
-function acknowledge_whmcs_for_payment($post_data)
+function khaltigateway_acknowledge_whmcs_for_payment($post_data)
 {
     $khalti_transaction_id = $post_data["khalti_transaction_id"];
 

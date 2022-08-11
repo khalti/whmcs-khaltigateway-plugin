@@ -31,10 +31,12 @@ function khaltigateway_whmcs_current_page()
 function khaltigateway_get_production_mode($gateway_params)
 {
     $is_test_mode = $gateway_params['is_test_mode'];
-    if ($is_test_mode == 'on' || $is_test_mode === true) {
-        return KHALTIGATEWAY_TEST_MODE;
-    } else {
+
+    # more explicit check for live mode
+    if ($is_test_mode == 'off' || $is_test_mode === FALSE) {
         return KHALTIGATEWAY_LIVE_MODE;
+    } else {
+        return KHALTIGATEWAY_TEST_MODE;
     }
 }
 
@@ -88,6 +90,7 @@ function khaltigateway_make_api_call($gateway_params, $api, $payload)
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
     $response = curl_exec($ch);
     if (curl_error($ch)) {
+        khaltigateway_testmode_debug($gateway_params, $ch);
         return NULL;
     }
     curl_close($ch);
