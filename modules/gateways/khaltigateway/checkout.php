@@ -18,6 +18,8 @@ function khaltigateway_invoicepage_code($gateway_params)
 {
     $system_url = $gateway_params['systemurl'];
     $invoice_id = $gateway_params['invoiceid'];
+    
+    
     $description = htmlspecialchars(strip_tags($gateway_params["description"]));
     $amount = $gateway_params['amount'];
     $currency_code = $gateway_params['currency'];
@@ -32,8 +34,38 @@ function khaltigateway_invoicepage_code($gateway_params)
         $npr_amount = $amount;
     }
 
-    $npr_amount_in_paisa = $npr_amount * 100;
 
+$command = 'GetInvoice';
+$postData = array(
+    'invoiceid' => $invoice_id,
+);
+$results = localAPI($command, $postData, $adminUsername);
+$resultss =json_encode($results) ;
+ $jsonDecode = json_decode($resultss);
+  $userid = $jsonDecode->userid;
+  
+ // echo $userid ;
+
+
+  $commands = 'GetClientsDetails';
+$postDatas = array(
+     'clientid' => $userid,
+    'stats' => true,
+);
+
+$resultss = localAPI($commands, $postDatas, $adminUsernames);
+//var_dump($resultss) ;
+$resultss =json_encode($resultss) ;
+ $jsonDecode = json_decode($resultss);
+  $fullname = $jsonDecode->fullname;
+  $email =$jsonDecode->email;
+  $phonenumber = $jsonDecode->phonenumber;
+  
+
+
+
+
+    $npr_amount_in_paisa = $npr_amount * 100;
     $module_url = "modules/gateways/khaltigateway/";
 
     $callback_url = $system_url . $module_url . "callback.php";
@@ -70,9 +102,9 @@ function khaltigateway_invoicepage_code($gateway_params)
         "purchase_order_id" => "{$invoice_id}",
         "purchase_order_name" => "{$description}",
         "customer_info" => array(
-            "name" => "Ashim Upadhaya", // todo
-            "email" => "example@gmail.com", // todo
-            "phone" => "9811496763" //todo
+            "name" => $fullname , 
+            "email" => $email, 
+            "phone" => $phonenumber 
         ),
         "amount_breakdown" => array(
             array(
