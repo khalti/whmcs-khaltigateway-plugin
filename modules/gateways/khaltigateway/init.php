@@ -28,7 +28,7 @@ if (!defined("KHALTIGATEWAY_WHMCS_MODULE_NAME")) {
     define('KHALTIGATEWAY_EPAY_LOOKUP_API', "epayment/lookup/");
 
     define('KHALTIGATEWAY_EPAY_TEST_ENDPOINT', "https://a.khalti.com/api/v2/");
-    define('KHALTIGATEWAY_EPAY_LIVE_ENDPOINT', "https://a.khalti.com/api/v2/");
+    define('KHALTIGATEWAY_EPAY_LIVE_ENDPOINT', "https://khalti.com/api/v2/");
 }
 
 // Fetch gateway configuration parameters if GatewayModule is activated
