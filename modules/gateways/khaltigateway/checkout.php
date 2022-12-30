@@ -18,8 +18,7 @@ function khaltigateway_invoicepage_code($gateway_params)
 {
     $system_url = $gateway_params['systemurl'];
     $invoice_id = $gateway_params['invoiceid'];
-    
-    
+
     $description = htmlspecialchars(strip_tags($gateway_params["description"]));
     $amount = $gateway_params['amount'];
     $currency_code = $gateway_params['currency'];
@@ -34,36 +33,13 @@ function khaltigateway_invoicepage_code($gateway_params)
         $npr_amount = $amount;
     }
 
+    $invoice = khaltigateway_whmcs_local_api("GetInvoice", array("invoiceid" => $invoice_id));
+    $userid = $invoice["userid"];
 
-$command = 'GetInvoice';
-$postData = array(
-    'invoiceid' => $invoice_id,
-);
-$results = localAPI($command, $postData, $adminUsername);
-$resultss =json_encode($results) ;
- $jsonDecode = json_decode($resultss);
-  $userid = $jsonDecode->userid;
-  
- // echo $userid ;
-
-
-  $commands = 'GetClientsDetails';
-$postDatas = array(
-     'clientid' => $userid,
-    'stats' => true,
-);
-
-$resultss = localAPI($commands, $postDatas, $adminUsernames);
-//var_dump($resultss) ;
-$resultss =json_encode($resultss) ;
- $jsonDecode = json_decode($resultss);
-  $fullname = $jsonDecode->fullname;
-  $email =$jsonDecode->email;
-  $phonenumber = $jsonDecode->phonenumber;
-  
-
-
-
+    $customer_details = khaltigateway_whmcs_local_api("GetClientsDetails", array("clientid" => $userid, "stats" => true));
+    $customer_name = $customer_details["fullname"];
+    $customer_email = $customer_details["email"];
+    $customer_phone_number = $customer_details["phonenumber"];
 
     $npr_amount_in_paisa = $npr_amount * 100;
     $module_url = "modules/gateways/khaltigateway/";
@@ -102,9 +78,9 @@ $resultss =json_encode($resultss) ;
         "purchase_order_id" => "{$invoice_id}",
         "purchase_order_name" => "{$description}",
         "customer_info" => array(
-            "name" => $fullname , 
-            "email" => $email, 
-            "phone" => $phonenumber 
+            "name" => $customer_name,
+            "email" => $customer_email,
+            "phone" => $customer_phone_number
         ),
         "amount_breakdown" => array(
             array(

@@ -129,3 +129,8 @@ function khaltigateway_epay_lookup($gateway_params, $pidx)
     );
     return khaltigateway_make_api_call($gateway_params, KHALTIGATEWAY_EPAY_LOOKUP_API, $payload);
 }
+
+function khaltigateway_whmcs_local_api($command, $args){
+    $response = localAPI($command, $args);
+    return $response;
+}
