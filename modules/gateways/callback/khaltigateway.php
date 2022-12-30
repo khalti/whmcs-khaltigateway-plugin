@@ -31,16 +31,14 @@ to visit our github page <a href='https://github.com/khalti'>https://github.com/
 for more official open source modules and plugins that we have developed.
 
 <br />
-Khalti is not just a wallet. It's a payment that's going to be our lifestyle.
-
-<strong>#WeAreCommitted</strong>
-
-<br />
 Sincerely,
 <a href='https://khalti.com'>Khalti.com</a>
 
 <br />
 <br />
-<small>PS: This page is a part of the <a href='https://github.com/khalti/whmcs-khaltigateway-plugin'>official Khalti Plugin for WHMCS</a> and it does literally nothing.</small>
+<small>PS: This page is a part of the <a href='https://github.com/khalti/whmcs-khaltigateway-plugin'>official Khalti Plugin for WHMCS</a> and does nothing.
+<br />
+Please visit our offiical documentation for integration process.
+</small>
 
 </pre>");
