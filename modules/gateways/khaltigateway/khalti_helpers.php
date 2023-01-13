@@ -47,19 +47,21 @@ function khaltigateway_whmcs_current_page()
 
 function khaltigateway_get_production_mode($gateway_params)
 {
-    $is_test_mode = $gateway_params['is_test_mode'];
+    $is_test_mode = $gateway_params['is_test_mode'] == "on";
 
     # more explicit check for live mode
-    if ($is_test_mode == 'off' || $is_test_mode === FALSE) {
-        return KHALTIGATEWAY_LIVE_MODE;
-    } else {
+    if($is_test_mode) {
         return KHALTIGATEWAY_TEST_MODE;
+    } else {
+        return KHALTIGATEWAY_LIVE_MODE;
     }
 }
 
-function khaltigateway_testmode_debug($gateway_params, $data)
+function khaltigateway_debug_msg($gateway_params, $data)
 {
-    if (khaltigateway_get_production_mode($gateway_params) == KHALTIGATEWAY_TEST_MODE) {
+    $is_debug_mode = $gateway_params['is_debug_mode'] == "on";
+
+    if ($is_debug_mode) {
         echo <<<EOT
         <div class='alert alert-warning' style='margin:0 10%; border-left:10px solid #5E338D;'>
         <strong>Debug Information for Khalti Payment Gateway</strong>
@@ -107,12 +109,12 @@ function khaltigateway_make_api_call($gateway_params, $api, $payload)
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
     $response = curl_exec($ch);
     if (curl_error($ch)) {
-        khaltigateway_testmode_debug($gateway_params, $ch);
+        khaltigateway_debug_msg($gateway_params, $ch);
         return NULL;
     }
     curl_close($ch);
 
-    khaltigateway_testmode_debug($gateway_params, $response);
+    khaltigateway_debug_msg($gateway_params, $response);
 
     return json_decode($response, true);
 }

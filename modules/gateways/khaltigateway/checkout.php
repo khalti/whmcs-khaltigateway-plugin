@@ -28,7 +28,7 @@ function khaltigateway_invoicepage_code($gateway_params)
         if ($npr_amount === FALSE) {
             return file_get_contents(__DIR__ . '/templates/invalid_currency.html');
         }
-        khaltigateway_testmode_debug($gateway_params, "Converted amount: " . $npr_amount . " from " . $amount . " " . $currency_code . " to NPR");
+        khaltigateway_debug_msg($gateway_params, "Converted amount: " . $npr_amount . " from " . $amount . " " . $currency_code . " to NPR");
     } else {
         $npr_amount = $amount;
     }

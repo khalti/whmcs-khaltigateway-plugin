@@ -50,7 +50,7 @@ function khaltigateway_config()
             'Default' => 'live_key_01234567890123456789012345678901',
             'Description' => "Please visit {$live_target} to get your keys",
         ),
-        'enable_debugging' => array(
+        'is_debug_mode' => array(
             'FriendlyName' => 'Enable Debugging',
             'Type' => 'yesno',
             'Description' => 'Tick to enable debugging mode',
