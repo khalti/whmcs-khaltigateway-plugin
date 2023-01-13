@@ -19,7 +19,7 @@ require_once __DIR__ . "/khaltigateway/init.php";
 function khaltigateway_MetaData()
 {
     return array(
-        'DisplayName' => 'Khalti Payment Gateway',
+        'DisplayName' => 'Khalti Payment Gateway (KPG-2)',
         'APIVersion' => '2.0', // Use API Version 1.1
         'DisableLocalCreditCardInput' => true,
         'TokenisedStorage' => false,
@@ -28,25 +28,27 @@ function khaltigateway_MetaData()
 
 function khaltigateway_config()
 {
+    $sandbox_target = "<a href='https://sandbox.khalti.com' target='_blank'>sandbox.khalti.com</a>";
+    $live_target = "<a href='https://admin.khalti.com' target='_blank'>admin.khalti.com</a>";
 
     return array(
         'FriendlyName' => array(
             'Type' => 'System',
-            'Value' => 'Khalti.com Payment Gateway',
+            'Value' => 'Khalti.com Payment Gateway (KPG-2)',
         ),
         'test_api_key' => array(
-            'FriendlyName' => 'TEST Payment API Key for Checkout Mode Integration',
+            'FriendlyName' => 'TEST API Secret Key for KPG-2',
             'Type' => 'text',
             'Size' => '48',
             'Default' => 'test_key_01234567890123456789012345678901',
-            'Description' => 'Please visit https://khalti.com/merchant to get your keys',
+            'Description' => "Please visit {$sandbox_target} to get your keys",
         ),
         'live_api_key' => array(
-            'FriendlyName' => 'LIVE Payment API Key for Checkout Mode Integration',
+            'FriendlyName' => 'LIVE API Secret Key for KPG-2',
             'Type' => 'password',
             'Size' => '48',
             'Default' => 'live_key_01234567890123456789012345678901',
-            'Description' => 'Please visit https://khalti.com/merchant to get your keys',
+            'Description' => "Please visit {$live_target} to get your keys",
         ),
         'enable_debugging' => array(
             'FriendlyName' => 'Enable Debugging',
@@ -54,9 +56,9 @@ function khaltigateway_config()
             'Description' => 'Tick to enable debugging mode',
         ),
         'is_test_mode' => array(
-            'FriendlyName' => 'Test Mode',
+            'FriendlyName' => 'Enable Test (sandbox) Mode',
             'Type' => 'yesno',
-            'Description' => 'Tick to enable test mode',
+            'Description' => 'Tick to enable sandbox mode of integration',
         )
     );
 }
