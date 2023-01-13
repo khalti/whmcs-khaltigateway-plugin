@@ -2,11 +2,10 @@
 
 /**
  * Khalti.com Payment Gateway WHMCS Module
- * 
- * @see https://docs.khalti.com/
- * 
- * @copyright Copyright (c) Khalti Private Limited
- * @author : @acpmasquerade for Khalti.com
+ * * @see https://docs.khalti.com/
+ * * @see https://github.com/khalti/whmcs-khaltigateway-plugin
+ * * @copyright Copyright (c) Khalti Private Limited
+ * * @author : @acpmasquerade for Khalti.com / @aerawatcorp
  */
 
 function khaltigateway_validate_currency($currency_code)
@@ -47,19 +46,21 @@ function khaltigateway_whmcs_current_page()
 
 function khaltigateway_get_production_mode($gateway_params)
 {
-    $is_test_mode = $gateway_params['is_test_mode'];
+    $is_test_mode = $gateway_params['is_test_mode'] == "on";
 
     # more explicit check for live mode
-    if ($is_test_mode == 'off' || $is_test_mode === FALSE) {
-        return KHALTIGATEWAY_LIVE_MODE;
-    } else {
+    if($is_test_mode) {
         return KHALTIGATEWAY_TEST_MODE;
+    } else {
+        return KHALTIGATEWAY_LIVE_MODE;
     }
 }
 
-function khaltigateway_testmode_debug($gateway_params, $data)
+function khaltigateway_debug($gateway_params, $data)
 {
-    if (khaltigateway_get_production_mode($gateway_params) == KHALTIGATEWAY_TEST_MODE) {
+    $is_debug_mode = $gateway_params['is_debug_mode'] == "on";
+
+    if ($is_debug_mode) {
         echo <<<EOT
         <div class='alert alert-warning' style='margin:0 10%; border-left:10px solid #5E338D;'>
         <strong>Debug Information for Khalti Payment Gateway</strong>
@@ -107,12 +108,12 @@ function khaltigateway_make_api_call($gateway_params, $api, $payload)
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
     $response = curl_exec($ch);
     if (curl_error($ch)) {
-        khaltigateway_testmode_debug($gateway_params, $ch);
-        return NULL;
+        khaltigateway_debug($gateway_params, $ch);
+        return null;
     }
     curl_close($ch);
 
-    khaltigateway_testmode_debug($gateway_params, $response);
+    khaltigateway_debug($gateway_params, $response);
 
     return json_decode($response, true);
 }
@@ -129,3 +130,17 @@ function khaltigateway_epay_lookup($gateway_params, $pidx)
     );
     return khaltigateway_make_api_call($gateway_params, KHALTIGATEWAY_EPAY_LOOKUP_API, $payload);
 }
+
+function khaltigateway_whmcs_local_api($command, $args){
+    return localAPI($command, $args);
+}
+
+function khaltigateway_whmcs_get_invoice($invoice_id){
+    return  khaltigateway_whmcs_local_api("GetInvoice", array("invoiceid" => $invoice_id));
+}
+
+
+function khaltigateway_whmcs_get_client($userid){
+    return khaltigateway_whmcs_local_api("GetClientsDetails", ["clientid" => $userid, "stats" => true]);
+}
+

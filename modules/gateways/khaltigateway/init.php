@@ -2,11 +2,10 @@
 
 /**
  * Khalti.com Payment Gateway WHMCS Module
- * 
  * @see https://docs.khalti.com/
- * 
+ * @see https://github.com/khalti/whmcs-khaltigateway-plugin
  * @copyright Copyright (c) Khalti Private Limited
- * @author : @acpmasquerade for Khalti.com
+ * @author : @acpmasquerade for Khalti.com / aerawatcorp
  */
 
 
@@ -19,7 +18,7 @@ if (!defined("KHALTIGATEWAY_WHMCS_MODULE_NAME")) {
     define("KHALTIGATEWAY_WHMCS_MODULE_NAME", "khaltigateway");
 
     define("KHALTIGATEWAY_PAYMENT_GATEWAY_ROOT_DIR", dirname(__FILE__));
-    define("KHALTIGATEWAY_HELPERS_DIR", dirname(__FILE__) . "/" . KHALTIGATEWAY_WHMCS_MODULE_NAME);
+    define("KHALTIGATEWAY_HELPERS_DIR", KHALTIGATEWAY_PAYMENT_GATEWAY_ROOT_DIR . "/" . KHALTIGATEWAY_WHMCS_MODULE_NAME);
 
     define("KHALTIGATEWAY_LIVE_MODE", "live");
     define("KHALTIGATEWAY_TEST_MODE", "test");
@@ -27,8 +26,10 @@ if (!defined("KHALTIGATEWAY_WHMCS_MODULE_NAME")) {
     define('KHALTIGATEWAY_EPAY_INITIATE_API', "epayment/initiate/");
     define('KHALTIGATEWAY_EPAY_LOOKUP_API', "epayment/lookup/");
 
-    define('KHALTIGATEWAY_EPAY_TEST_ENDPOINT', "https://a.khalti.com/api/v2/");
+    define('KHALTIGATEWAY_EPAY_TEST_ENDPOINT', "https://a.khalti.com/api/v2/"); # @TODO: This shall be updated later
     define('KHALTIGATEWAY_EPAY_LIVE_ENDPOINT', "https://khalti.com/api/v2/");
+
+    define('KHALTIGATEWAY_WHMCS_VIEWINOVICE_PAGE', "VIEWINVOICE");
 }
 
 // Fetch gateway configuration parameters if GatewayModule is activated
