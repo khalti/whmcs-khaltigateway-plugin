@@ -2,11 +2,10 @@
 
 /**
  * Khalti.com Payment Gateway WHMCS Module
- * 
- * @see https://docs.khalti.com/
- * 
- * @copyright Copyright (c) Khalti Private Limited
- * @author : @acpmasquerade for Khalti.com
+ * * @see https://docs.khalti.com/
+ * * @see https://github.com/khalti/whmcs-khaltigateway-plugin
+ * * @copyright Copyright (c) Khalti Private Limited
+ * * @author : @acpmasquerade for Khalti.com / @aerawatcorp
  */
 
 function khaltigateway_validate_currency($currency_code)
@@ -57,7 +56,7 @@ function khaltigateway_get_production_mode($gateway_params)
     }
 }
 
-function khaltigateway_debug_msg($gateway_params, $data)
+function khaltigateway_debug($gateway_params, $data)
 {
     $is_debug_mode = $gateway_params['is_debug_mode'] == "on";
 
@@ -109,12 +108,12 @@ function khaltigateway_make_api_call($gateway_params, $api, $payload)
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
     $response = curl_exec($ch);
     if (curl_error($ch)) {
-        khaltigateway_debug_msg($gateway_params, $ch);
-        return NULL;
+        khaltigateway_debug($gateway_params, $ch);
+        return null;
     }
     curl_close($ch);
 
-    khaltigateway_debug_msg($gateway_params, $response);
+    khaltigateway_debug($gateway_params, $response);
 
     return json_decode($response, true);
 }
@@ -133,6 +132,15 @@ function khaltigateway_epay_lookup($gateway_params, $pidx)
 }
 
 function khaltigateway_whmcs_local_api($command, $args){
-    $response = localAPI($command, $args);
-    return $response;
+    return localAPI($command, $args);
 }
+
+function khaltigateway_whmcs_get_invoice($invoice_id){
+    return  khaltigateway_whmcs_local_api("GetInvoice", array("invoiceid" => $invoice_id));
+}
+
+
+function khaltigateway_whmcs_get_client($userid){
+    return khaltigateway_whmcs_local_api("GetClientsDetails", ["clientid" => $userid, "stats" => true]);
+}
+

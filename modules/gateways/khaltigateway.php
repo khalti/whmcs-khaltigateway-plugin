@@ -2,9 +2,8 @@
 
 /**
  * Khalti.com Payment Gateway WHMCS Module
- * 
  * @see https://docs.khalti.com/
- * 
+ * @see https://github.com/khalti/whmcs-khaltigateway-plugin
  * @copyright Copyright (c) Khalti Private Limited
  * @author : @acpmasquerade for Khalti.com
  */
@@ -34,7 +33,7 @@ function khaltigateway_config()
     return array(
         'FriendlyName' => array(
             'Type' => 'System',
-            'Value' => 'Khalti.com Payment Gateway (KPG-2)',
+            'Value' => 'Khalti Payment Gateway (KPG-2)',
         ),
         'test_api_key' => array(
             'FriendlyName' => 'TEST API Secret Key for KPG-2',
@@ -66,7 +65,7 @@ function khaltigateway_config()
 function khaltigateway_link($gateway_params)
 {
     $currentPage = khaltigateway_whmcs_current_page();
-    if ($currentPage !== "VIEWINVOICE") {
+    if ($currentPage !== KHALTIGATEWAY_WHMCS_VIEWINOVICE_PAGE) {
         return khaltigateway_noinvoicepage_code();
     }
     return  khaltigateway_invoicepage_code($gateway_params);
@@ -125,3 +124,4 @@ function khaltigateway_refund($gateway_params)
         'fees' => $feeAmount,
     );
 }
+

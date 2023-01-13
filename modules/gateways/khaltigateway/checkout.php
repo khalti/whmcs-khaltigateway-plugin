@@ -2,11 +2,10 @@
 
 /**
  * Khalti.com Payment Gateway WHMCS Module
- * 
  * @see https://docs.khalti.com/
- * 
+ * @see https://github.com/khalti/whmcs-khaltigateway-plugin
  * @copyright Copyright (c) Khalti Private Limited
- * @author : @acpmasquerade for Khalti.com
+ * @author : @acpmasquerade for Khalti.com / aerawatcorp
  */
 
 function khaltigateway_noinvoicepage_code()
@@ -25,18 +24,18 @@ function khaltigateway_invoicepage_code($gateway_params)
 
     if (!khaltigateway_validate_currency($currency_code)) {
         $npr_amount = khaltigateway_convert_currency($currency_code, $amount);
-        if ($npr_amount === FALSE) {
-            return file_get_contents(__DIR__ . '/templates/invalid_currency.html');
+        if ($npr_amount === false) {
+            return khaltigateway_invalid_currency_page();
         }
-        khaltigateway_debug_msg($gateway_params, "Converted amount: " . $npr_amount . " from " . $amount . " " . $currency_code . " to NPR");
+        khaltigateway_debug($gateway_params, "Converted amount: {$npr_amount} from {$amount} {$currency_code} to NPR");
     } else {
         $npr_amount = $amount;
     }
 
-    $invoice = khaltigateway_whmcs_local_api("GetInvoice", array("invoiceid" => $invoice_id));
+    $invoice = khaltigateway_whmcs_get_invoice($invoice_id);
     $userid = $invoice["userid"];
 
-    $customer_details = khaltigateway_whmcs_local_api("GetClientsDetails", array("clientid" => $userid, "stats" => true));
+    $customer_details = khaltigateway_whmcs_get_client($userid);
     $customer_name = $customer_details["fullname"];
     $customer_email = $customer_details["email"];
     $customer_phone_number = $customer_details["phonenumber"];
@@ -44,8 +43,8 @@ function khaltigateway_invoicepage_code($gateway_params)
     $npr_amount_in_paisa = $npr_amount * 100;
     $module_url = "modules/gateways/khaltigateway/";
 
-    $callback_url = $system_url . $module_url . "callback.php";
-    $invoice_url = $system_url . "viewinvoice.php?id={$invoice_id}";
+    $callback_url = "{$system_url}{$module_url}callback.php";
+    $invoice_url = "{$system_url}viewinvoice.php?id={$invoice_id}";
     $successUrl = "{$invoice_url}&paymentsuccess=true";
 
     $cart = array();
@@ -54,8 +53,8 @@ function khaltigateway_invoicepage_code($gateway_params)
         $currency_code = $item->getAmount()->getCurrency()['code'];
         if (!khaltigateway_validate_currency($currency_code)) {
             $amount = khaltigateway_convert_currency($currency_code, $amount);
-            if ($amount === FALSE) {
-                return file_get_contents(__DIR__ . '/templates/invalid_currency.html');
+            if ($amount === false) {
+                return khaltigateway_invalid_currency_page();
             }
         }
 
@@ -91,6 +90,10 @@ function khaltigateway_invoicepage_code($gateway_params)
         "product_details" => $cart
     );
 
+    return khaltigateway_pidx_page($gateway_params, $npr_amount, $checkout_args);
+}
+
+function khaltigateway_pidx_page($gateway_params, $npr_amount, $checkout_args){
     $payment_initiate = khaltigateway_epay_initiate($gateway_params, $checkout_args);
     $pidx = $payment_initiate["pidx"];
 
@@ -98,7 +101,7 @@ function khaltigateway_invoicepage_code($gateway_params)
         return file_get_contents(__DIR__ . "/templates/initiate_failed.html");
     }
 
-    /** 
+    /*
      * Variables required for the template
      * pidx_url
      * button_css
@@ -114,3 +117,8 @@ function khaltigateway_invoicepage_code($gateway_params)
         "npr_amount" => $npr_amount
     ));
 }
+
+function khaltigateway_invalid_currency_page(){
+    return file_get_contents(__DIR__ . '/templates/invalid_currency.html');
+}
+
