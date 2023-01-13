@@ -7,26 +7,26 @@ Official plugin for WHMCS
 
 ## File Structure
 ```
-modules / 
- | gateways / 
-   | khaltigateway.php
-   | callback / 
-       | khaltigateway.php
-   | khaltigateway / 
-      | callback.php
-      | checkout.php
-      | init.php
-      | khalti_helpers.php
-      | utils.php
-      | whmcs.php
-   | assets / 
-      | enable.png
-      | configure_epay.png
-   | templates / 
-      | invalid_currency.html
-      | noninvoice_page.html
-      | invoice_payment_button.php
-      | initiate_failed.html
+├── modules
+│   └── gateways
+│       ├── callback
+│       │   └── khaltigateway.php
+│       ├── khaltigateway
+│       │   ├── assets
+│       │   │   ├── configure_epay.png
+│       │   │   └── enable.png
+│       │   ├── callback.php
+│       │   ├── checkout.php
+│       │   ├── init.php
+│       │   ├── khalti_helpers.php
+│       │   ├── templates
+│       │   │   ├── initiate_failed.html
+│       │   │   ├── invalid_currency.html
+│       │   │   ├── invoice_payment_button.php
+│       │   │   └── noninvoice_page.html
+│       │   ├── utils.php
+│       │   └── whmcs.php
+│       └── khaltigateway.php   
 ```
    (The plugin creates 
    - file khaltigateway.php under modules/gateways directory of your root installation,
