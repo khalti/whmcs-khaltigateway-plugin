@@ -45,3 +45,4 @@ Once the gateway is enabled, configure Khalti Payment Gateway with the merchant 
 ![Configuring Khalti Payment Gateway](modules/gateways/khaltigateway/assets/configure_epay.png)
 
 PS: Please make sure that the currency "NPR" is selected for the option "Convert to For Processing"
+PS: Please make sure that Refund Works only in Live mode.
