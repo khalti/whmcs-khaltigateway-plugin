@@ -31,7 +31,7 @@ Official plugin for WHMCS
    (The plugin creates 
    - file khaltigateway.php under modules/gateways directory of your root installation,
    - directory khaltigateway/ under modules/gateways directory of your root installation
-   - file khaltigateway.php under modules/gateways/callback directory of your root installation. (This file is kept just to maintain the WHMCS convention)
+   - file khaltigateway.php under modules/gateways/callback directory of your root installation. (This file is kept just to maintain the WHMCS convention))
    
 ## Activate
 Login to admin area of your WHMCS installation and enable the gateway from 
