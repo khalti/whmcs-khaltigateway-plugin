@@ -8,7 +8,6 @@
  * @author : @acpmasquerade for Khalti.com / aerawatcorp
  */
 
-
 require_once __DIR__ . "/utils.php";
 require_once __DIR__ . "/khalti_helpers.php";
 require_once __DIR__ . "/checkout.php";
@@ -26,7 +25,7 @@ if (!defined("KHALTIGATEWAY_WHMCS_MODULE_NAME")) {
     define('KHALTIGATEWAY_EPAY_INITIATE_API', "epayment/initiate/");
     define('KHALTIGATEWAY_EPAY_LOOKUP_API', "epayment/lookup/");
 
-    define('KHALTIGATEWAY_EPAY_TEST_ENDPOINT', "https://a.khalti.com/api/v2/"); # @TODO: This shall be updated later
+    define('KHALTIGATEWAY_EPAY_TEST_ENDPOINT', "https://a.khalti.com/api/v2/"); 
     define('KHALTIGATEWAY_EPAY_LIVE_ENDPOINT', "https://khalti.com/api/v2/");
 
     define('KHALTIGATEWAY_WHMCS_VIEWINOVICE_PAGE', "VIEWINVOICE");
