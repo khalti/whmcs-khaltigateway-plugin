@@ -27,7 +27,7 @@ if (!defined("KHALTIGATEWAY_WHMCS_MODULE_NAME")) {
 
     define('KHALTIGATEWAY_EPAY_TEST_ENDPOINT', "https://a.khalti.com/api/v2/"); 
     define('KHALTIGATEWAY_EPAY_LIVE_ENDPOINT', "https://khalti.com/api/v2/");
-
+    define('KHALTIGATEWAY_EPAY_REFUND_ENDPOINT' ,"https://khalti.com/api/v2/epayment/merchant-transaction/");
     define('KHALTIGATEWAY_WHMCS_VIEWINOVICE_PAGE', "VIEWINVOICE");
 }
 
