@@ -31,7 +31,7 @@ Official plugin for WHMCS
    (The plugin creates 
    - file khaltigateway.php under modules/gateways directory of your root installation,
    - directory khaltigateway/ under modules/gateways directory of your root installation
-   - file khaltigateway.php under modules/gateways/callback directory of your root installation. (This file is kept just to maintain the WHMCS convention)
+   - file khaltigateway.php under modules/gateways/callback directory of your root installation. (This file is kept just to maintain the WHMCS convention))
    
 ## Activate
 Login to admin area of your WHMCS installation and enable the gateway from 
@@ -45,3 +45,4 @@ Once the gateway is enabled, configure Khalti Payment Gateway with the merchant 
 ![Configuring Khalti Payment Gateway](modules/gateways/khaltigateway/assets/configure_epay.png)
 
 PS: Please make sure that the currency "NPR" is selected for the option "Convert to For Processing"
+PS: Please make sure that Refund Works only in Live mode.

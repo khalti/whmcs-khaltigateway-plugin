@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Khalti.com Payment Gateway WHMCS Module
  * @see https://docs.khalti.com/
@@ -93,7 +92,8 @@ function khaltigateway_invoicepage_code($gateway_params)
     return khaltigateway_pidx_page($gateway_params, $npr_amount, $checkout_args);
 }
 
-function khaltigateway_pidx_page($gateway_params, $npr_amount, $checkout_args){
+function khaltigateway_pidx_page($gateway_params, $npr_amount, $checkout_args)
+{
     $payment_initiate = khaltigateway_epay_initiate($gateway_params, $checkout_args);
     $pidx = $payment_initiate["pidx"];
 
@@ -118,7 +118,7 @@ function khaltigateway_pidx_page($gateway_params, $npr_amount, $checkout_args){
     ));
 }
 
-function khaltigateway_invalid_currency_page(){
+function khaltigateway_invalid_currency_page()
+{
     return file_get_contents(__DIR__ . '/templates/invalid_currency.html');
 }
-

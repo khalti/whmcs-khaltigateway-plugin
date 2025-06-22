@@ -2,10 +2,11 @@
 
 /**
  * Khalti.com Payment Gateway WHMCS Module
- * * @see https://docs.khalti.com/
- * * @see https://github.com/khalti/whmcs-khaltigateway-plugin
- * * @copyright Copyright (c) Khalti Private Limited
- * * @author : @acpmasquerade for Khalti.com / @aerawatcorp
+ * 
+ * @see https://docs.khalti.com/
+ * @see https://github.com/khalti/whmcs-khaltigateway-plugin
+ * @copyright Copyright (c) Khalti Private Limited
+ * @author : @acpmasquerade for Khalti.com / @aerawatcorp
  */
 
 function khaltigateway_validate_currency($currency_code)
@@ -20,7 +21,7 @@ function khaltigateway_convert_currency($currency_code, $amount)
     if (is_null($payment_currency_id)) {
         return FALSE;
     }
-    return convertCurrency($amount, $payment_currency_id, $npr_currency_id); //Here the result is the same amount sent
+    return convertCurrency($amount, $payment_currency_id, $npr_currency_id);
 }
 
 function khaltigateway_convert_from_npr_to_basecurrency($npr_amount)
@@ -48,8 +49,7 @@ function khaltigateway_get_production_mode($gateway_params)
 {
     $is_test_mode = $gateway_params['is_test_mode'] == "on";
 
-    # more explicit check for live mode
-    if($is_test_mode) {
+    if ($is_test_mode) {
         return KHALTIGATEWAY_TEST_MODE;
     } else {
         return KHALTIGATEWAY_LIVE_MODE;
@@ -93,7 +93,6 @@ function khaltigateway_make_api_call($gateway_params, $api, $payload)
 
     $post_data = json_encode($payload);
 
-    // Call the API
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_POST, 1);
@@ -118,6 +117,26 @@ function khaltigateway_make_api_call($gateway_params, $api, $payload)
     return json_decode($response, true);
 }
 
+function khaltigateway_refund_api_call($api_key, $transactionIdToRefund)
+{
+    $apiEndpoint = constant("KHALTIGATEWAY_EPAY_REFUND_ENDPOINT") . $transactionIdToRefund . "/refund/";
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiEndpoint);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: Key ' . $api_key
+    ]);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    return [json_decode($response, true), $httpCode];
+}
+
 function khaltigateway_epay_initiate($gateway_params, $checkout_params)
 {
     return khaltigateway_make_api_call($gateway_params, KHALTIGATEWAY_EPAY_INITIATE_API, $checkout_params);
@@ -131,16 +150,17 @@ function khaltigateway_epay_lookup($gateway_params, $pidx)
     return khaltigateway_make_api_call($gateway_params, KHALTIGATEWAY_EPAY_LOOKUP_API, $payload);
 }
 
-function khaltigateway_whmcs_local_api($command, $args){
+function khaltigateway_whmcs_local_api($command, $args)
+{
     return localAPI($command, $args);
 }
 
-function khaltigateway_whmcs_get_invoice($invoice_id){
-    return  khaltigateway_whmcs_local_api("GetInvoice", array("invoiceid" => $invoice_id));
+function khaltigateway_whmcs_get_invoice($invoice_id)
+{
+    return khaltigateway_whmcs_local_api("GetInvoice", array("invoiceid" => $invoice_id));
 }
 
-
-function khaltigateway_whmcs_get_client($userid){
+function khaltigateway_whmcs_get_client($userid)
+{
     return khaltigateway_whmcs_local_api("GetClientsDetails", ["clientid" => $userid, "stats" => true]);
 }
-
