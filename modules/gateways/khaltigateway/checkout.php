@@ -128,7 +128,7 @@ function khaltigateway_pidx_page($gateway_params, $npr_amount, $checkout_args)
      */
     $pidx_url = $payment_initiate["payment_url"];
     return file_include_contents(__DIR__ . "/templates/invoice_payment_button.php", array(
-        'khalti_logo_url' => 'https://khalti-mediakit.s3.ap-south-1.amazonaws.com/brand/khalti-logo-color.200.png',
+        'khalti_logo_url' => 'https://cdn.nayathegana.com/media/2025/07/13/23471783407643cb921f718ed30726b9.png',
         "pidx_url" => $pidx_url,
         "button_css" => "",
         "gateway_params" => $gateway_params,
