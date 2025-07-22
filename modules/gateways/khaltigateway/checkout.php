@@ -46,28 +46,46 @@ function khaltigateway_invoicepage_code($gateway_params)
     $invoice_url = "{$system_url}viewinvoice.php?id={$invoice_id}";
     $successUrl = "{$invoice_url}&paymentsuccess=true";
 
-    $cart = array();
-    foreach ($gateway_params["cart"]->items as $item) {
-        $amount = $item->getAmount()->getValue();
-        $currency_code = $item->getAmount()->getCurrency()['code'];
-        if (!khaltigateway_validate_currency($currency_code)) {
-            $amount = khaltigateway_convert_currency($currency_code, $amount);
-            if ($amount === false) {
-                return khaltigateway_invalid_currency_page();
+        $cart = array();
+
+        foreach ($gateway_params["cart"]->items as $item) {
+            $amount = $item->getAmount()->getValue();
+            $currency_code = $item->getAmount()->getCurrency()['code'];
+
+            // Convert to NPR if necessary
+            if (!khaltigateway_validate_currency($currency_code)) {
+                $converted_amount = khaltigateway_convert_currency($currency_code, $amount);
+                if ($converted_amount === false) {
+                    return khaltigateway_invalid_currency_page();
+                }
+                $amount = $converted_amount;
             }
+
+            $item_amount_in_paisa = intval(round($amount * 100));
+            $qty = intval($item->getQuantity());
+
+            // Skip invalid entries
+            if ($item_amount_in_paisa < 1 || $qty < 1) {
+                khaltigateway_debug(array(
+                    'item' => $item->getName(),
+                    'qty' => $qty,
+                    'amount_paisa' => $item_amount_in_paisa
+                ), 'Skipping invalid cart item');
+                continue;
+            }
+
+            $unit_price = intval(round($item_amount_in_paisa / $qty));
+
+            $cart[] = array(
+                "name" => $item->getName(),
+                "identity" => $item->getUuid(),
+                "total_price" => $item_amount_in_paisa,
+                "quantity" => $qty,
+                "unit_price" => $unit_price
+            );
         }
 
-        $item_amount_in_paisa = intval($amount * 100);
 
-        $qty = $item->getQuantity();
-        $cart[] = array(
-            "name" => $item->getName(),
-            "identity" => $item->getUuid(),
-            "total_price" => $item_amount_in_paisa,
-            "quantity" => $qty,
-            "unit_price" => $item_amount_in_paisa / $qty
-        );
-    }
 
     $checkout_args = array(
         "return_url" => "{$callback_url}",
@@ -110,7 +128,7 @@ function khaltigateway_pidx_page($gateway_params, $npr_amount, $checkout_args)
      */
     $pidx_url = $payment_initiate["payment_url"];
     return file_include_contents(__DIR__ . "/templates/invoice_payment_button.php", array(
-        'khalti_logo_url' => 'https://khalti-mediakit.s3.ap-south-1.amazonaws.com/brand/khalti-logo-color.200.png',
+        'khalti_logo_url' => 'https://cdn.nayathegana.com/media/2025/07/13/23471783407643cb921f718ed30726b9.png',
         "pidx_url" => $pidx_url,
         "button_css" => "",
         "gateway_params" => $gateway_params,
