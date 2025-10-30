@@ -18,20 +18,37 @@ header("Content-Type: application/json");
 
 try {
 
-    // Load WHMCS core
-    $WHMCS_ROOT = dirname(dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))));
-    require_once $WHMCS_ROOT . "/init.php";
+    // Robust WHMCS bootstrap: use __DIR__ relative path instead of relying on SCRIPT_FILENAME
+    require_once __DIR__ . '/../../../init.php';
 
-    $whmcs->load_function('gateway');
-    $whmcs->load_function('invoice');
+    // Include helper functions if available (older/newer WHMCS versions)
+    if (file_exists(__DIR__ . '/../../../includes/gatewayfunctions.php')) {
+        require_once __DIR__ . '/../../../includes/gatewayfunctions.php';
+    }
+    if (file_exists(__DIR__ . '/../../../includes/invoicefunctions.php')) {
+        require_once __DIR__ . '/../../../includes/invoicefunctions.php';
+    }
 
-    // Load Khalti gateway files
+    // Load Khalti gateway module helpers
     require_once __DIR__ . "/init.php";
     require_once __DIR__ . "/whmcs.php";
 
-    // Fetch callback parameters
+    // Ensure gateway params exist; fallback to getGatewayVariables() if needed
+    global $khaltigateway_gateway_params;
+    if (empty($khaltigateway_gateway_params) && function_exists('getGatewayVariables')) {
+        $khaltigateway_gateway_params = getGatewayVariables(KHALTIGATEWAY_WHMCS_MODULE_NAME);
+    }
+
+    // Fetch callback parameters (support POST form, GET or raw JSON)
     $rawInput = file_get_contents('php://input');
     $callback_args = !empty($_POST) ? $_POST : (!empty($_GET) ? $_GET : (!empty($rawInput) ? json_decode($rawInput, true) : []));
+
+    // Basic early logging to help diagnose production-only failures
+    $gateway_module = ($khaltigateway_gateway_params['paymentmethod'] ?? 'khaltigateway');
+    $rawLog = is_string($rawInput) ? substr($rawInput, 0, 4000) : json_encode($rawInput);
+    if (function_exists('logTransaction')) {
+        logTransaction($gateway_module, "Callback received: method={$_SERVER['REQUEST_METHOD']}; raw=" . $rawLog . "; post_keys=" . json_encode(array_keys($_POST)), "Debug");
+    }
     
     // Extract essential fields
     $pidx = $callback_args['pidx'] ?? null;
